@@ -194,9 +194,6 @@ The Information Bottleneck (IB) provides a hypothetically optimal framework
  is known, as it would be in the unsupervised case.
  This work demonstrates that lifting this assumption results in a tighter
  bound on the IB, and improved empirical performence.
- Moreover, we propose a theoretic interpretation for our improved results,
- based on previous information-theoretic studies on variational representation
- learning.
 \end_layout
 
 \begin_layout Section
@@ -396,12 +393,7 @@ cite{Alemi2018,Pereyra2017,Achille2018}
  neural classifier, preventing it from overfitting the learned representations.
  This enables better representations to be learned, as suggested by our
  theoretical model and by the empirical evidence.
-\end_layout
-
-\begin_layout Standard
-The following literature review and derivations refer to information theory
- and variational approximations.
- A preliminary mutual ground and notation is provided in Appendix
+ The reader is encouraged to refer to the preliminaries provided in Appendix
 \begin_inset space ~
 \end_inset
 
@@ -418,15 +410,35 @@ ref{sec:AppendixA}
 
 \end_inset
 
-.
+ for notation.
 \end_layout
 
 \begin_layout Section
 Related work
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:related_work"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
 Deterministic Information Bottleneck
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:deterministic_ib"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+TODO: Note that IB is an unsupervised soft clustering problem (slonim)
 \end_layout
 
 \begin_layout Standard
@@ -880,7 +892,7 @@ cite{Alemi2017}
  robustness.
  We note that CLUB does not prove a tighter bound on the VIB rate term,
  and as a result the IB objective alltogether.
- We also note that our current work derivea a tighter bound on IB through
+ We also note that our current work derives a tighter bound on IB through
  the IB disotrtion term, 
 \begin_inset Formula $I(Z;Y)$
 \end_inset
@@ -891,6 +903,13 @@ cite{Alemi2017}
 
 \begin_layout Subsection
 Information theoretic regularization
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:it_regularization"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1173,32 +1192,13 @@ cite{Tishby1999,Chechik2003,Painsky2017}
 
 , we propose to replace it with a variational approximation of the classifier
  entropy, which provides a lower bound.
- This modification attains a tighter theoretical bound on the IB objective
+ This modification attains a tighter variational bound on the IB objective
  for any 
 \begin_inset Formula $Y$
 \end_inset
 
  with positive entropy, and a tighter empirical bound for all 
 \begin_inset Formula $Y$
-\end_inset
-
-.
- In addition, we propose an information theoretic framework to interpret
- our modification, as elaborated in section
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-ref{subsec:interpretation}
-\end_layout
-
 \end_inset
 
 .
@@ -1360,21 +1360,7 @@ I(Z;Y)= & \int\int p^{*}(y,z)log\left(\frac{p^{*}(y,z)}{p^{*}(y)p^{*}(z)}\right)
 \end_layout
 
 \begin_layout Standard
-This bound is also known as the Barber-Agakov bound 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-cite{Barber2003}
-\end_layout
-
-\end_inset
-
-.
- We now diverge from the original VIB derivation by replacing 
+We now diverge from the original VIB derivation by replacing 
 \begin_inset Formula $H_{p^{*}}(Y)$
 \end_inset
 
@@ -1476,7 +1462,24 @@ Variational approximation
 \end_layout
 
 \begin_layout Standard
-We define the variational approximation 
+Let 
+\begin_inset Formula $e(z|x)$
+\end_inset
+
+ a variational encoder approximating 
+\begin_inset Formula $p^{*}(z|x)$
+\end_inset
+
+ and 
+\begin_inset Formula $c(y|z)$
+\end_inset
+
+ a variational classifier approximating 
+\begin_inset Formula $p^{*}(y|z)$
+\end_inset
+
+.
+ We define the variational approximation 
 \begin_inset Formula $L_{VUB}$
 \end_inset
 
@@ -1494,27 +1497,6 @@ L_{UB}\approx L_{VUB}\equiv & \beta\int\int p^{*}(x)e(z|x)log\left(\frac{e(z|x)}
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-Where 
-\begin_inset Formula $e(z|x)$
-\end_inset
-
- is a variational encoder approximating 
-\begin_inset Formula $p^{*}(z|x)$
-\end_inset
-
- and 
-\begin_inset Formula $c(y|z)$
-\end_inset
-
- a variational classifier approximating 
-\begin_inset Formula $p^{*}(y|z)$
-\end_inset
-
-.
- 
 \end_layout
 
 \begin_layout Subsection
@@ -3874,6 +3856,22 @@ cite{Pereyara2017}
  information between representation and the real underlying distribution,
  bringing the attained rate distortion ratio closer to its theoretical IB
  limit.
+ While other advancements have been done in recent years, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+cite{Fischer2020,Cheng2020}
+\end_layout
+
+\end_inset
+
+, none show a tighter bound than VIB, and all modify the derivation of the
+ rate term, while our work both derives an upper bound by modifying the
+ distortion term.
 \end_layout
 
 \begin_layout Standard
@@ -4122,6 +4120,152 @@ cite{Kingma2019}
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+citet{Vapnik1995}
+\end_layout
+
+\end_inset
+
+ defines 
+\emph on
+supervised
+\emph default
+ learning as follows:
+\end_layout
+
+\begin_layout Itemize
+A generator of random vectors 
+\begin_inset Formula $x\in\mathbb{R}^{d}$
+\end_inset
+
+, drawn independently from an unknown probability distribution 
+\begin_inset Formula $p^{*}(x)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+A supervisor who returns a scalar output value 
+\begin_inset Formula $y\in\mathbb{R}$
+\end_inset
+
+, according to an unknown conditional probability distribution 
+\begin_inset Formula $p^{*}(y|x)$
+\end_inset
+
+.
+ We note that these probabilities can indeed be soft labels, where 
+\begin_inset Formula $y$
+\end_inset
+
+ is a continuous probability vector, rather the more commonly used hard
+ labels.
+\end_layout
+
+\begin_layout Itemize
+A learning machine capable of implementing a predefined set of functions,
+ 
+\begin_inset Formula $f(x,\theta):\mathbb{R}^{d}\times\Theta\mapsto\mathbb{R}$
+\end_inset
+
+, where 
+\begin_inset Formula $\Theta$
+\end_inset
+
+ is a set of parameters.
+\end_layout
+
+\begin_layout Standard
+The problem of learning is that of choosing from the given set of functions,
+ the one that best approximates the supervisor’s response.
+ The choice is typically based on a training set of 
+\begin_inset Formula $n$
+\end_inset
+
+ independent and identically distributed pairs of observations drawn according
+ to 
+\begin_inset Formula $p(x,y)=p(x)p(y|x):\mathcal{S}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Given a set of unlabeled data points 
+\begin_inset Formula $\{x_{1},...,x_{n}\},x_{i}\in\mathbb{R}^{d}$
+\end_inset
+
+, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+citet{Slonim2002}
+\end_layout
+
+\end_inset
+
+ defines 
+\emph on
+unsupervised
+\emph default
+ learning as the task of constructing a compact representation of these
+ points, which in some sense reveals their hidden structure.
+ This representation can be used further to achieve a variety of goals,
+ including reasoning, prediction, communication etc.
+ In particular, unsupervised clustering partitions the data points into
+ exhaustive and mutually exclusive clusters, where each cluster can typically
+ be represented by a centroid, typically a weighted average of the cluster's
+ members.
+ Soft clustering assigns cluster probabilities for each data point, and
+ fits an assignment by minimizing the expected 
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+(see, e.g., [51], Chapter 23).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+TODO: Add soft labels example, add definition od supervised and unsupervised.
+\end_layout
+
+\begin_layout Standard
+In this work, information theoretic functions share the same notation for
+ discrete and continuous settings and are denoted as follows:
 \end_layout
 
 \begin_layout Standard
@@ -4587,23 +4731,95 @@ name "sec:AppendixB"
 \end_layout
 
 \begin_layout Standard
+This appendix expands the related work Section
+\begin_inset space ~
+\end_inset
 
-\series bold
-TODO: Rewrite this appendix
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{sec:related_work}
+\end_layout
+
+\end_inset
+
+, by providing a deeper review of the IB, the IB theory of deep learning,
+ and variational approximations for the IB.
+\end_layout
+
+\begin_layout Subsection*
+The Information Plane
 \end_layout
 
 \begin_layout Standard
+As mentioned in Section
+\begin_inset space ~
+\end_inset
 
-\series bold
-Info plane for IB
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{sec:deterministic_ib}
 \end_layout
 
-\begin_layout Standard
-The optimal IB solution is a function of 
+\end_inset
+
+, the solution to the IB objective, 
+\begin_inset Formula $\mathcal{L}_{IB}=I(X;Z)-\beta I(Z;Y)$
+\end_inset
+
+, depends on the lagrange multiplier 
 \begin_inset Formula $\beta$
 \end_inset
 
- and was named 'the information curve' as illustrated in Figure
+.
+ Hence, the IB objective has no one unique solution, and can thus be plotted
+ as a function of 
+\begin_inset Formula $\beta$
+\end_inset
+
+ and of 
+\begin_inset Formula $Z$
+\end_inset
+
+'s cardinality, over a Cartesian system composed of the axes 
+\begin_inset Formula $I(X;Z)$
+\end_inset
+
+ (rate) and 
+\begin_inset Formula $I(Z;Y)$
+\end_inset
+
+ (distortion).
+ When plotted as a function of 
+\begin_inset Formula $\beta$
+\end_inset
+
+ the IB functional is called the 'information curve' and its Cartesian system
+ the 'information plane' 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+cite{Tishby1999}
+\end_layout
+
+\end_inset
+
+, as illustrated in Figure
 \begin_inset space ~
 \end_inset
 
@@ -4621,10 +4837,49 @@ ref{info_plane}
 \end_inset
 
 .
- The IB can be interpreted as a method to learn a representation that holds
- just enough information to satisfy a desired task, while discarding all
- other available information, presumably providing a model with the least
- possible complexity.
+ When 
+\begin_inset Formula $\beta$
+\end_inset
+
+ approaches 
+\begin_inset Formula $0$
+\end_inset
+
+ the distortion term is nullified and we learn a representation that has
+ no information over the down stream task, and maximal compression (such
+ a representation may be a null vector).
+ When 
+\begin_inset Formula $\beta$
+\end_inset
+
+ approaches 
+\begin_inset Formula $\infty$
+\end_inset
+
+ we learn a representation that has the maximal possible information over
+ the downstream task, but that also holds the maximal information over the
+ training data, hence overfitted.
+ The region above the information curve is unreachable by any possible represent
+ation.
+ The different bifurcation of the information curve, illustrated in Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{info_plane}
+\end_layout
+
+\end_inset
+
+, correspond to the different possible cardinalities of the compressed represent
+ation.
 \end_layout
 
 \begin_layout Standard
@@ -4664,7 +4919,7 @@ The information plane and curve: rate-distortion ratio over
 
  the representation is informative but potentially overfitted (maximal informati
 on).
- Adapted from 
+ Taken from 
 \begin_inset ERT
 status open
 
@@ -4697,13 +4952,41 @@ name "info_plane"
 
 \end_layout
 
-\begin_layout Standard
-
-\series bold
-TODO: Fixing a broken ELBO
+\begin_layout Subsection*
+Fixing a Broken Elbo
 \end_layout
 
 \begin_layout Standard
+As mentioned in 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{sec:it_regularization}
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+citet{Alemi2018}
+\end_layout
+
+\end_inset
+
+ extends the information plane with an additional theoretical bound for
+ rate distortion ratio, imposed by the usage of finite parametric families
+ of variational approximations.
+ 
 \begin_inset ERT
 status open
 
@@ -4982,11 +5265,28 @@ name "phase_diagram"
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Subsection*
+IB theory of deep learning
+\end_layout
 
-\series bold
-TODO: Elaborate on previous research in the filed, and our reported info
- plane behaviour, including the graph.
+\begin_layout Standard
+The following is a summary of work leveraging the IB framework for deterministic
+ DNN optimization and interpretation.
+ For a more comprehensive review of this opinion-splitting topic, the reader
+ is advised to consult the work of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+citet{Goldfeld2020}
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -5009,9 +5309,6 @@ citet{Tishby2015}
  ratios between DNN layers will indicate if a model is too complex or too
  simple for a given task and training set.
  
-\end_layout
-
-\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -5211,9 +5508,7 @@ cite{ShwartzZiv2017}
  compression stage, and that DNNs do forget task irrelevant information,
  but this happens concurently to the learning of task relevant information,
  and not neccesarily in a distnct phase.
-\end_layout
-
-\begin_layout Standard
+ 
 \begin_inset ERT
 status open
 
@@ -5235,10 +5530,86 @@ e to invertible transformations and because of the absence of a decision
 \end_layout
 
 \begin_layout Standard
+When examining the information plane behavior in the current study, we notice
+ recurring patterns of distortion reduction followed by rate increase, resemblin
+g the ERM and representation compression stages described by 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+citet{ShwartzZiv2017}
+\end_layout
+
+\end_inset
+
+, as elaborated in Appendix
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{sec:AppendixC}
+\end_layout
+
+\end_inset
+
+.
 
 \series bold
-TODO: Add this proof that CEB is equivalent to IB - Consider adding this
- (as many reviewers said that I didn't metion CEB enough)
+ 
+\end_layout
+
+\begin_layout Subsection*
+Conditional Entropy Bottleneck
+\end_layout
+
+\begin_layout Standard
+As mentioned in Section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{subsec:variational_approximations}
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+citet{Fischer2020}
+\end_layout
+
+\end_inset
+
+ showed that the conditional entropy bottleneck is equivalent to IB for
+ 
+\begin_inset Formula $\gamma=\beta-1$
+\end_inset
+
+ following the chain rule of mutual information and the IB markov chain.
+ We develope this equivalence in detail:
 \end_layout
 
 \begin_layout Standard
@@ -5983,36 +6354,6 @@ citet{ShwartzZiv2017}
 \end_inset
 
 .
- We elbaorate on this obeservation in Appendix
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-ref{sec:AppendixB}
-\end_layout
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-\begin_inset space ~
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-We made another interesting observation during our study, regarding information
- plane behavior throughout the training process.
  While previous research has documented the occurrence of error minimization
  and representation compression phases 
 \begin_inset ERT
