@@ -55,7 +55,6 @@
 \usepackage{microtype}      % microtypography
 \usepackage{xcolor}         % colors
 
-
 %\title{Formatting Instructions For NeurIPS 2024}
 
 
@@ -182,9 +181,9 @@ A Tighter Bound on the Information Bottleneck with Applications to Deep
 \end_layout
 
 \begin_layout Abstract
-The Information Bottleneck (IB) provides a hypothetically optimal framework
- for unsupervised data modeling, yet it is often intractable.
- Recent efforts optimized classifier DNNs with a variational upper bound
+The Information Bottleneck, IB, provides a hypothetically optimal framework
+ for unsupervised data modeling, yet is often intractable.
+ Recent efforts optimized supervised DNNs with a variational upper bound
  to the IB objective, resulting in improved robustness to adversarial attacks.
  However, when deriving the upper bound, it is presumed that the supervisor
  distribution 
@@ -192,8 +191,9 @@ The Information Bottleneck (IB) provides a hypothetically optimal framework
 \end_inset
 
  is known, as it would be in the unsupervised case.
- This work demonstrates that lifting this assumption results in a tighter
- bound on the IB, and improved empirical performence.
+ This work demonstrates that lifting this assumption not only results in
+ a tighter bound on the IB and improved empirical performance, but also
+ proposes a new motivation for regularization.
 \end_layout
 
 \begin_layout Section
@@ -205,16 +205,22 @@ Deep Neural Nets (DNNs) learn latent representations induced by their downstream
  task, objective function, and other parameters.
  The quality of the learned representations impacts the DNN's generalization
  ability and the coherence of the emerging latent space 
-\series bold
-TODO: ADD CITATION
-\series default
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+cite{Bengio2009}
+\end_layout
+
+\end_inset
+
 .
  A question emerges regarding the extraction of an optimal latent representation
  for all data points from a restricted set of training examples.
- Classic information theory provides tools to optimize compression and transmiss
-ion of data, but it does not provide methods to gauge the relevance of a
- compressed signal to its downstream task.
- Methods such as rate-distortion 
+ Classic information theory provides rate-distortion 
 \begin_inset ERT
 status open
 
@@ -227,9 +233,10 @@ cite{Shannon1959}
 
 \end_inset
 
- regard all information as equal, not taking into account which information
- is more relevant to the specified downstream task without constructing
- tailored distortion functions.
+ for optimal compression of data.
+ However, rate-distortion regards all information as equal, not taking into
+ account which information is more relevant to a specified downstream task,
+ without constructing tailored distortion functions.
  The Information Bottleneck, IB, 
 \begin_inset ERT
 status open
@@ -243,14 +250,12 @@ cite{Tishby1999}
 
 \end_inset
 
- resolves this limitation by defining mutual information (MI) between the
- learned representation and the downstream task as a universal distortion
- function.
- Under this definition, the IB loss function is derived through a constrained
- optimization approach.
- However, optimizing the IB objective requires computations of mutual informatio
-n, which is possible between discrete distributions, and some continouous
- ones, but not in the general case 
+ resolves this limitation by defining mutual information, MI, between the
+ learned representation and a designated downstream task as a universal
+ distortion function.
+ Yet, learning representations using the IB method requires computations
+ of mutual information, which is possible between discrete distributions,
+ and some continuous ones, but not in the general case 
 \begin_inset ERT
 status open
 
@@ -273,9 +278,7 @@ status open
 
 
 \backslash
-cite{Saxe2018}
-\backslash
-cite{Amjad2020}
+cite{Saxe2018,Amjad2020}
 \end_layout
 
 \end_inset
@@ -296,7 +299,8 @@ cite{Kingma2014}
 \end_inset
 
  inspired variational approximations to approximate upper bounds to the
- IB objective, allowing it's utilization in general settings 
+ IB objective, allowing its utilization as a loss function for DNNs, where
+ the underlying distributions are both continuous and unknown 
 \begin_inset ERT
 status open
 
@@ -310,12 +314,16 @@ cite{Alemi2017,Fischer2020,Cheng2020}
 \end_inset
 
 .
- These proposed approaches learn representations in supervised settings,
- without knowledge of the underlying distribution 
-\begin_inset Formula $p(x,y)$
+ These approaches learn representations in supervised settings, without
+ knowledge of the underlying distribution 
+\begin_inset Formula $p^{*}(x,y)$
 \end_inset
 
-.
+, utilizing the learned variational conditional 
+\begin_inset Formula $p(y|x)$
+\end_inset
+
+ to approximate MI.
  In contrast, non variational IB methods learn representations in unsupervised
  settings, where the stochastic process underlying the observed data is
  known 
@@ -332,50 +340,26 @@ cite{Tishby1999,Chechik2003,Painsky2017}
 \end_inset
 
 .
- Variational IB methods learn representations simultaneously while learning
- the unknown, underlying distributions, making both learning processes tightly
- intertwined.
- However, when deriving the variational IB objectives, it is assumed that
- 
-\begin_inset Formula $p(y)$
+ Nonetheless, when deriving the variational IB objectives, previous research
+ relax the problem by assuming that 
+\begin_inset Formula $p^{*}(y)$
 \end_inset
 
- is known, and hence is not part of the optimization process, as in the
- unsupervised case.
- The implications of this assumption become more apperant when considering
- the discrimenative downstream task of estimating the the conditional supervisor
- distribution 
+ is constant, while in practice it's an optimized variational approximation.
+ We derive a new upper bound for the IB objective, and a subsequent variational
+ approximation, by removing the relaxation.
+ We show that our bound is tighter than previous bounds, and that our proposed
+ loss function is a tighter variational approximation, when considering
+ 
 \begin_inset Formula $p(y|x)$
 \end_inset
 
-.
- Our work removes this assumption, noting that in the supervised variational
- case, mutual information should be computed with respect to the variational
- supervisor distribution, and not with respect to the unknown real distribution.
- We adopt the same information theoretic and variational approach proposed
- by 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-citet{Alemi2017}
-\end_layout
-
-\end_inset
-
-, with the exception that we do not regrad 
-\begin_inset Formula $p(y)$
-\end_inset
-
- as constant.
- This alteration leads us to derive a tighter bound on the IB objective,
- for which we show empirical evidence of improved performence across several
- challenging tasks, and over different modalities.
- We utilize previous information theoretic frameworks for variational representa
-tion learning and regularization 
+ as part of the optimization.
+ We believe our new derivation is a better adaptation of the IB for supervised
+ tasks, and show empirical evidence of improved performance across several
+ challenging tasks over different modalities.
+ We utilize previous studies on variational representation learning and
+ regularization 
 \begin_inset ERT
 status open
 
@@ -388,29 +372,19 @@ cite{Alemi2018,Pereyra2017,Achille2018}
 
 \end_inset
 
-, to analyze our modification.
- We conclude that our proposed derivation applies regularization over the
- neural classifier, preventing it from overfitting the learned representations.
- This enables better representations to be learned, as suggested by our
- theoretical model and by the empirical evidence.
- The reader is encouraged to refer to the preliminaries provided in Appendix
+ to interpret our findings, and conclude that our proposed derivation applies
+ regularization over the variational classifier, preventing it from overfitting
+ the learned representations and thus enabling greater MI between learned
+ representation and the real and unknown stochastic process.
+ 
+\end_layout
+
+\begin_layout Standard
+The reader is encouraged to refer to the preliminaries provided in Appendix
 \begin_inset space ~
 \end_inset
 
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-ref{sec:AppendixA}
-\end_layout
-
-\end_inset
-
- for notation.
+A before proceeding.
 \end_layout
 
 \begin_layout Section
@@ -436,12 +410,6 @@ name "sec:deterministic_ib"
 \end_layout
 
 \begin_layout Standard
-
-\series bold
-TODO: Note that IB is an unsupervised soft clustering problem (slonim)
-\end_layout
-
-\begin_layout Standard
 Classic information theory offers rate-distortion 
 \begin_inset ERT
 status open
@@ -463,7 +431,7 @@ cite{Shannon1959}
 \begin_inset Formula $Z$
 \end_inset
 
-, such that maximal compression is acheived while keeping the encoding quality
+, such that maximal compression is achieved while keeping the encoding quality
  above a certain threshold.
  Encoding quality is measured by a task specific distortion function: 
 \begin_inset Formula $d:X\times Z\mapsto\mathbb{R}^{+}$
@@ -480,7 +448,7 @@ cite{Shannon1959}
 \end_inset
 
 .
- The Information Bottleneck 
+ The Information Bottleneck, IB, 
 \begin_inset ERT
 status open
 
@@ -498,7 +466,7 @@ cite{Tishby1999}
 \begin_inset Formula $Y$
 \end_inset
 
- be the target signal for some specific downstream task such that the joint
+ be the target signal for some specific downstream task, such that the joint
  distribution 
 \begin_inset Formula $P^{*}(x,y)$
 \end_inset
@@ -529,7 +497,7 @@ cite{Tishby1999}
 \end_inset
 
 .
- The solution to the IB objective is a function of the lagrange multiplier
+ The solution to the IB objective is a function of the Lagrange multiplier
  
 \begin_inset Formula $\beta$
 \end_inset
@@ -539,13 +507,25 @@ n as an accepted metric, as elaborated in more detail in Appendix
 \begin_inset space ~
 \end_inset
 
+B.
+ The IB is in fact an unsupervised soft clustering problem, where each data
+ point 
+\begin_inset Formula $x$
+\end_inset
 
+ is assigned a probabilities to belong to the different clusters 
+\begin_inset Formula $z$
+\end_inset
+
+ 
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-ref{sec:AppendixB}
+
+\backslash
+cite{Slonim2002}
 \end_layout
 
 \end_inset
@@ -599,7 +579,7 @@ citet{Saxe2018}
 
 \end_inset
 
- considered the application of the IB funcitonal as an objective for DNNs,
+ considered the application of the IB functional as an objective for DNNs,
  and concluded that computing mutual information in deterministic DNNs is
  problematic as the entropy term 
 \begin_inset Formula $H(Z|X)$
@@ -658,17 +638,18 @@ citet{Alemi2017}
  introduced the Variational Information Bottleneck (VIB) - a variational
  approximation for an upper bound to the IB objective for DNN optimization.
  Bounds for 
-\begin_inset Formula $I(Z,Y)$
+\begin_inset Formula $I(X,Z)$
 \end_inset
 
  and 
-\begin_inset Formula $I(X,Z)$
+\begin_inset Formula $I(Z,Y)$
 \end_inset
 
  are derived from the non negativity of KL divergence, and are used to form
  an upper bound for the IB objective.
- This upper bound is optimized using variational approximations and the
- 'reparameterization trick' 
+ A variational upper bound is derived by replacing intractable distributions
+ with variational approximations.
+ Using the 'reparameterization trick' 
 \begin_inset ERT
 status open
 
@@ -681,11 +662,13 @@ cite{Kingma2014}
 
 \end_inset
 
-, yielding a loss function that is equivalent to the 
+ a discrete empirical estimation of the variational upper bound is then
+ used as a loss function for classifier DNN optimization.
+ The subsequent loss function is equivalent to the 
 \begin_inset Formula $\beta$
 \end_inset
 
--autoencoder 
+-autoencoder loss 
 \begin_inset ERT
 status open
 
@@ -698,7 +681,7 @@ cite{Higgins2017}
 
 \end_inset
 
- objective.
+.
  VIB was evaluated over image classification tasks, and displayed substantial
  improvements in robustness to adversarial attacks, while causing a slight
  reduction in test set accuracy, comparing to equivalent deterministic models.
@@ -716,7 +699,7 @@ cite{Achille2018}
 \end_inset
 
  extended VIB with a total correlation term, designed to increase latent
- disentangelemnt.
+ disentanglement.
  
 \begin_inset ERT
 status open
@@ -796,23 +779,14 @@ cite{Krizhevsky2009learning}
 \begin_inset Formula $\gamma=\beta-1$
 \end_inset
 
- following the chain rule of mutual information and the IB markov chain,
- as established in 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-ref{sec:AppendixB}
-\end_layout
-
+ following the chain rule of mutual information and the IB Markov chain,
+ as established in Appendix
+\begin_inset space ~
 \end_inset
 
-.
- VCEB was shown to be a special case of VIB where rate is approximated by
- the variational expression 
+B.
+ VIB was shown to be a special case of VCEB, where rate is approximated
+ by the variational expression 
 \begin_inset Formula $\mathbb{E}_{x,y}log\left(e(z|x)\right)-\mathbb{E}_{x,y}log\left(b(z|y)\right)$
 \end_inset
 
@@ -836,10 +810,10 @@ citet{Geiger2020}
 
  investigated wether VCEB is a tighter variational approximation to IB than
  VIB, and concluded that no ordering can be established in the general case,
- and concluded that any empirical improvment VCEB exhibits over VIB is not
- due to a tighter variational bound on the IB, but rather of VCEB being
- more amenable to optimization, or simply a successful lost function in
- its own regard.
+ noting that any empirical improvement VCEB exhibits over VIB is not due
+ to a tighter variational bound on the IB, but rather of VCEB being more
+ amenable to optimization, or simply a successful lost function in its own
+ regard.
  
 \begin_inset ERT
 status open
@@ -887,13 +861,25 @@ cite{Alemi2017}
 \end_inset
 
 .
- CLUB based VIB was tested it the over the MNIST dataset, resulting in a
- 0.07% improvement in accuracy compared to VIB, without reporting adversarial
- robustness.
- We note that CLUB does not prove a tighter bound on the VIB rate term,
- and as a result the IB objective alltogether.
- We also note that our current work derives a tighter bound on IB through
- the IB disotrtion term, 
+ CLUB based VIB was tested it the over the MNIST dataset 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+cite{Deng2012mnist}
+\end_layout
+
+\end_inset
+
+, resulting in a slight improvement in accuracy compared to VIB, without
+ reporting adversarial robustness.
+ We note that CLUB does not prove a tighter bound on the VIB rate term ,
+ or on the IB objective.
+ We also note, that our current work derives a tighter bound on IB through
+ the IB distortion term, 
 \begin_inset Formula $I(Z;Y)$
 \end_inset
 
@@ -962,13 +948,27 @@ citet{Alemi2018}
 \end_inset
 
  distinguishes between the IB theoretical limit for representation quality,
- and the limit of its variational approximation.
- The variational limit is looser, depends on the chosen variational family.
+ and the limits of variational approximations in VAEs.
+ The variational limit is looser, and depends on the chosen variational
+ family.
  In the context of VAEs, the representation quality depends on choosing
- marginal and a deocder distributions that are close to the true distributions.
+ marginal and decoder distributions that are close to the true distributions.
  A common degeneration is the usage of overpowerful decoders that overfit
  encoder embeddings, inducing low quality latent representations.
- The VAE ELBO loss 
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+citet{Alemi2018}
+\end_layout
+
+\end_inset
+
+ claims that the VAE ELBO loss 
 \begin_inset ERT
 status open
 
@@ -981,28 +981,15 @@ cite{Kingma2014}
 
 \end_inset
 
- is suseptible to this condition as its KL regularization term isn't directly
+ is susceptible to this flaw, as its KL regularization term isn't directly
  affected by the quality of the reconstructed image, and no additional regulariz
 ation is performed over the decoder directly.
  This work is further elaborated on in Appendix
 \begin_inset space ~
 \end_inset
 
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-ref{sec:AppendixB}
-\end_layout
-
-\end_inset
-
-.
- In the current work, a conditional entropy term 
+B.
+ In the current study, a conditional entropy term 
 \begin_inset ERT
 status open
 
@@ -1015,22 +1002,8 @@ cite{Pereyra2017}
 
 \end_inset
 
- emerges from the derivation of the new upper bound for the IB objective,
- as shown in Section
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:vub"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-, and we extend the theoretic framework proposed in 
+ emerges from our proposed derivation of a variational IB loss function,
+ and we extend the theoretic framework proposed in 
 \begin_inset ERT
 status open
 
@@ -1043,7 +1016,7 @@ cite{Alemi2018}
 
 \end_inset
 
- to explain why this new term facilitates a better variational approximation
+ to interpret why this new term facilitates a better variational approximation
  of the IB objective.
 \end_layout
 
@@ -1059,7 +1032,73 @@ name "sec:vub"
 \end_layout
 
 \begin_layout Standard
-The VIB loss 
+As elaborated in Section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{sec:deterministic_ib}
+\end_layout
+
+\end_inset
+
+, IB optimization is defined as 
+\begin_inset Formula $Z:\underset{P(Z|X)}{min}I(X;Z)$
+\end_inset
+
+ subject to 
+\begin_inset Formula $I(Z;Y)\ge D$
+\end_inset
+
+.
+ While this is true in the unsupervised case, adapting IB to supervised
+ tasks admits the learned classifier as a new RV to the optimization problem.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+citet{Geiger2020}
+\end_layout
+
+\end_inset
+
+ suggested the Markov chain 
+\begin_inset Formula $Y\leftrightarrow X\text{\ensuremath{\rightarrow}}Z\rightarrow\hat{Y}$
+\end_inset
+
+ for variational IB, distinguishing between the real unknown RV 
+\begin_inset Formula $Y$
+\end_inset
+
+, and the variational approximation 
+\begin_inset Formula $\hat{Y}$
+\end_inset
+
+.
+ Following this logic, variational IB optimization should be defined as:
+ 
+\begin_inset Formula $Z,\hat{Y}:\underset{P(Z|X),P(\hat{Y}|Z)}{min}I(X;Z)$
+\end_inset
+
+ subject to 
+\begin_inset Formula $I(Z;\hat{Y})\ge D$
+\end_inset
+
+.
+ Previous research had relaxed the supervised optimization problem, in order
+ to derive a tractable loss function.
+ The VIB loss 
 \begin_inset ERT
 status open
 
@@ -1076,7 +1115,7 @@ cite{Alemi2017}
 \begin_inset Formula $CE$
 \end_inset
 
-) term and a beta regulated KL regularization term, similar to the 
+) term and a beta regulated KL regularization term, as in 
 \begin_inset Formula $\beta$
 \end_inset
 
@@ -1098,38 +1137,12 @@ cite{Higgins2017}
 \begin_inset Formula $I(X;Z)$
 \end_inset
 
-, as shown in Equation 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-ref{eq:i_z_x2}
-\end_layout
-
-\end_inset
-
 , while the 
 \begin_inset Formula $CE$
 \end_inset
 
- term from a bound on the IB distortion term 
+ term is derived from a bound on the IB distortion term 
 \begin_inset Formula $I(Z;Y)=H(Y)-H(Y|Z)$
-\end_inset
-
-, as shown in Equation 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-ref{eq:i_z_y2}
-\end_layout
-
 \end_inset
 
 .
@@ -1147,51 +1160,22 @@ ref{eq:i_z_y2}
 \end_inset
 
  term.
- We note that in previous studies on analytically computable IB, 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-cite{Tishby1999,Chechik2003,Painsky2017}
-\end_layout
-
-\end_inset
-
-, the distributions 
-\begin_inset Formula $p^{*}(x,y),p^{*}(x),p^{*}(y)$
-\end_inset
-
- are given, while in the variational case they are not.
- We claim that when optimizing a variational IB we optimize MI between our
- learned representation and a variational classifier, and not with the real
- and unknown RV 
-\begin_inset Formula $Y$
-\end_inset
-
-.
- Moreover, any optimization over 
-\begin_inset Formula $Z$
-\end_inset
-
-, including cross entropy, depends on our classifier model of 
-\begin_inset Formula $Y$
-\end_inset
-
-.
- This distinction should discourage regarding 
-\begin_inset Formula $Y$
-\end_inset
-
- as constant when deriving an upper bound.
- Following this logic, instead of omitting 
+ We derive a new upper bound for the IB objective by not omitting 
 \begin_inset Formula $H(Y)$
 \end_inset
 
-, we propose to replace it with a variational approximation of the classifier
- entropy, which provides a lower bound.
+ from the distortion term.
+ Subsequently, the variational approximation for our proposed bound is a
+ variationaly tighter when taking into account that the optimization process
+ is done over 
+\begin_inset Formula $P(\hat{Y}|Z)$
+\end_inset
+
+ as well as 
+\begin_inset Formula $P(Z|X)$
+\end_inset
+
+.
  This modification attains a tighter variational bound on the IB objective
  for any 
 \begin_inset Formula $Y$
@@ -1369,19 +1353,7 @@ We now diverge from the original VIB derivation by replacing
 \end_inset
 
  instead of omitting it.
- In addition, we limit the new term to make sure that the inequality 
-\begin_inset Formula $H(Y|Z)\le H(Y)$
-\end_inset
-
- holds when computing entropy over the different distributions 
-\begin_inset Formula $p^{*}$
-\end_inset
-
- and 
-\begin_inset Formula $c$
-\end_inset
-
-.
+ In addition, we limit the new term to make sure that the inequality holds.
 \end_layout
 
 \begin_layout Standard
@@ -1607,7 +1579,7 @@ cite{Kingma2014}
 \uwave off
 \noun off
 \color none
- In addition, let 
+ Let 
 \family default
 \series default
 \shape default
@@ -1632,17 +1604,25 @@ cite{Kingma2014}
 \begin_inset Formula $C_{\lambda}(y|z)\sim Categorical$
 \end_inset
 
-, and let 
-\begin_inset Formula $\hat{H}_{\mathcal{S}}(Y)$
+, let 
+\begin_inset Formula $H_{\mathcal{S}}(Y)$
 \end_inset
 
- be the entropy of the RV 
+ be the empirical entropy of the real RV 
 \begin_inset Formula $Y$
 \end_inset
 
-, as empirically measured over the training data.
- Finally, we chose a standard Gaussian as a variational approximation for
- the marginal 
+ as measured from the training data, and let 
+\begin_inset Formula $\hat{Y}$
+\end_inset
+
+ be the variational approximation for 
+\begin_inset Formula $Y$
+\end_inset
+
+.
+ We chose a standard Gaussian as a variational approximation for the marginal
+ 
 \begin_inset Formula $r(z)$
 \end_inset
 
@@ -1651,10 +1631,9 @@ cite{Kingma2014}
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align}
-\hat{L}_{VUB}\equiv & \frac{1}{N}\sum_{n=1}^{N}\Bigg[\beta D_{KL}\left(e_{\phi}(z|x_{n})\Bigg|\Bigg|r(z)\right)-log\left(C_{\lambda}\left(y_{n}\big|\hat{z}_{n}\right)\right)\label{eq:l_vub_empirical}\\
-- & min\left\{ \hat{H}_{\mathcal{S}}(Y),H\left(C_{\lambda}\left(y_{n}\big|\hat{z}_{n}\right)\right)\right\} \Bigg]\nonumber 
-\end{align}
+\begin{equation}
+\hat{L}_{VUB}\equiv\frac{1}{N}\sum_{n=1}^{N}\left[\beta D_{KL}\left(e_{\phi}(z|x_{n})\Bigg|\Bigg|r(z)\right)-log\left(C_{\lambda}\left(y_{n}\big|\hat{z}_{n}\right)\right)-min\left\{ H_{\mathcal{S}}(Y),H_{C_{\lambda}}\left(\hat{Y}|Z\right)\right\} \right]\label{eq:l_vub_empirical}
+\end{equation}
 
 \end_inset
 
@@ -1681,8 +1660,8 @@ cite{Pereyra2017}
 \end_inset
 
 .
- The quality of representations learned by ELBO loss functions degenerates
- severly as a consequence of overfitting decoders 
+ It was also shown that the quality of representations learned by ELBO loss
+ functions degenerates as a consequence of overfitting decoders 
 \begin_inset ERT
 status open
 
@@ -1696,36 +1675,50 @@ cite{Alemi2018}
 \end_inset
 
 .
- As VIB is equivalent to the ELBO loss, it follows that overfitting classifiers
- induce uninformative representations in variational IB DNNs.
- We propose that the emerging regularization term is a possible remedy to
- the discrepancies in the ELBO loss, and suggest the following theoretical
- interpretation: Let 
-\begin_inset Formula $I^{*}(Z;Y)$
+ As VIB is in fact a beta regulated ELBO loss, it follows that regulating
+ its classifier can lead to better representations learned.
+ We propose an additional theoretical motivation for the effects of entropy
+ regularization on supervised learning: Following the variational IB Markov
+ chain 
+\begin_inset Formula $Y\leftrightarrow X\text{\ensuremath{\rightarrow}}Z\rightarrow\hat{Y}$
 \end_inset
 
- be the mutual information between the learned representation 
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+cite{Geiger2020}
+\end_layout
+
+\end_inset
+
+ we have that 
+\begin_inset Formula $\hat{Y}$
+\end_inset
+
+ is a deterministic function of 
 \begin_inset Formula $Z$
 \end_inset
 
- and the true RV 
-\begin_inset Formula $Y$
+, and so 
+\begin_inset Formula $H(Z)\ge H(\hat{Y})$
 \end_inset
 
-, and let 
-\begin_inset Formula $I_{c}(Z;Y$
-\end_inset
+ by the data processing inequality 
+\begin_inset ERT
+status open
 
-) be mutual information between 
-\begin_inset Formula $Z$
-\end_inset
+\begin_layout Plain Layout
 
- and the variational approximation of 
-\begin_inset Formula $Y$
-\end_inset
 
-: 
-\begin_inset Formula $I_{c}(Z;Y)\equiv\int\int p^{*}(z,y)log\left(\frac{c(y|z)}{p^{*}(y)}\right)dzdy$
+\backslash
+cite{Cover1999elements}
+\end_layout
+
 \end_inset
 
 .
@@ -1734,58 +1727,8 @@ cite{Alemi2018}
 
 \begin_layout Standard
 \begin_inset Formula 
-\begin{align*}
-2H_{c}(Y)-H_{c,e}(Y,Z)\overset{\text{Data processing}}{\le} & I_{c}(Z;Y)=H_{c}(Y)+H_{e}(Z)-H_{c}(Y,Z)\\
-\overset{\ref{eq:i_z_y}}{\le} & I^{*}(Z;Y)\le min\left(H_{e}(Z),H_{p^{*}}(Y)\right)
-\end{align*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Where the second inequality holds by Equation
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-ref{eq:i_z_y}
-\end_layout
-
-\end_inset
-
-, and the first by the data processing inequality as the variational 
-\begin_inset Formula $Y$
-\end_inset
-
- is a transformation of 
-\begin_inset Formula $Z$
-\end_inset
-
-.
- Any increase in the entropy of the variational 
-\begin_inset Formula $H_{c}(Y)$
-\end_inset
-
- will increase the joint entropy 
-\begin_inset Formula $H_{c,e}(Y,Z)$
-\end_inset
-
- by at most the same magnitude, leading to the following proportionality:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
 \[
-H_{c}(Y)\propto2H_{c}(Y)-H_{c,e}(Y,Z)
+2H(\hat{Y})-H(\hat{Y},Z)\overset{\text{DPI}}{\le}H(\hat{Y})+H(Z)-H(\hat{Y},Z)=I(Z;\hat{Y})\overset{(\ref{eq:i_z_y})}{\le}I(Z;Y)\le min\left(H(Z),H(Y)\right)
 \]
 
 \end_inset
@@ -1794,22 +1737,35 @@ H_{c}(Y)\propto2H_{c}(Y)-H_{c,e}(Y,Z)
 \end_layout
 
 \begin_layout Standard
-Finally, we have that the true mutual information 
-\begin_inset Formula $I^{*}(Z;Y)$
+For the left most expression, we have that any increase in 
+\begin_inset Formula $H(\hat{Y})$
 \end_inset
 
- is squeezed between 
-\begin_inset Formula $min\left(H_{e}(Z),H_{p^{*}}(Y)\right)$
+ will increase the joint entropy 
+\begin_inset Formula $H(\hat{Y},Z)$
 \end_inset
 
- and 
-\begin_inset Formula $H_{c}(Y)\ge H_{c}(Y|Z)$
+ by at most the same magnitude, leading to the proportionality 
+\begin_inset Formula $H(\hat{Y})\propto2H(\hat{Y})-H(\hat{Y},Z)$
 \end_inset
 
 .
- We propose that the induced increase in variational entropy, caused by
- our suggested change, can skew the true mutual information 
-\begin_inset Formula $I^{*}(Z;Y)$
+ It follows that the true mutual information 
+\begin_inset Formula $I(Z;Y)$
+\end_inset
+
+ is squeezed between 
+\begin_inset Formula $min\left(H(Z),H(Y)\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $H(\hat{Y})\ge H(\hat{Y}|Z)$
+\end_inset
+
+.
+ We propose that the increase in variational entropy, that follows from
+ VUB, can skew the true mutual information 
+\begin_inset Formula $I(Z;Y)$
 \end_inset
 
  up.
@@ -1840,16 +1796,16 @@ ref{venn_diagram}
 
 \end_inset
 
- illustrates the possible effect of the increase in variational entropy:
+ illustrates the possible effect of an increase in variational entropy:
  The left hand diagram suggest a model with low variational entropy, and
  a low variational mutual information, and the right hand diagram suggest
  a model with increased variational entropy.
  The cross entropy term pushes 
-\begin_inset Formula $I_{c}(Z;Y)$
+\begin_inset Formula $I(Z;\hat{Y})$
 \end_inset
 
  up, and the real mutual information 
-\begin_inset Formula $I^{*}(Z;Y)$
+\begin_inset Formula $I(Z;Y)$
 \end_inset
 
  increases as a result of the Barber-Agakov inequality 
@@ -1953,7 +1909,7 @@ citet{Alemi2017}
 \end_inset
 
 , extending it to NLP tasks as well.
- Image classification models were trained on the ImageNet 2012 dataset 
+ We trained image classification models on the ImageNet 2012 dataset 
 \begin_inset ERT
 status open
 
@@ -2004,7 +1960,7 @@ cite{maas2011imdb}
 
  value, with consistent performance and statistical significance shown by
  a Wilcoxon rank sum test.
- Each model was evaluated using test set accuracy and robustness to various
+ Each model was evaluated using test set accuracy, and robustness to various
  adversarial attacks.
  For image classification, we employed the untargeted Fast Gradient Sign
  (FGS) attack 
@@ -2024,7 +1980,7 @@ cite{Goodfellow2015}
 \begin_inset Formula $L_{2}$
 \end_inset
 
- optimization attack 
+ attack 
 \begin_inset ERT
 status open
 
@@ -2069,25 +2025,12 @@ cite{ren2019pwws}
 \end_inset
 
 .
- Elaboration on the experimntal setup, the rank-sum test and further insights
- from the experiments are available in Appendix
+ Elaboration on the experimental setup, results and further insights from
+ the experiments are available in Appendix
 \begin_inset space ~
 \end_inset
 
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-ref{sec:AppendixC}
-\end_layout
-
-\end_inset
-
-.
+C.
  Code to reconstruct the experiments is provided to the supplementary materials
  of this paper.
 \end_layout
@@ -2152,20 +2095,7 @@ ref{fig:targeted_examples}
 \begin_inset space ~
 \end_inset
 
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-ref{sec:AppendixC}
-\end_layout
-
-\end_inset
-
-.
+C.
  The empirical results presented in Table 
 \begin_inset ERT
 status open
@@ -3098,20 +3028,7 @@ ref{tab:text_attack_examples}
 \begin_inset space ~
 \end_inset
 
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-ref{sec:AppendixC}
-\end_layout
-
-\end_inset
-
-.
+C.
  In this modality, VUB significantly outperforms VIB in both test set accuracy
  and robustness to the two attacks.
  Moreover, VUB also outperformed the original model in terms of test set
@@ -3812,13 +3729,13 @@ name "sec:Discussion"
 \end_layout
 
 \begin_layout Standard
-The IB is a private case of Rate Distortion, and is designed to learn representa
+The IB is a private case of rate distortion, and is designed to learn representa
 tions in unsupervised settings.
  Adapting the IB to supervised settings requires maximization of mutual
  information between compressed representation and learned discriminator,
  rather than the real and unknown downstream RV.
  This distinction requires lifting the assumption that the downstream distributi
-on is known during the dereivation of a tractable objective.
+on is known during the derivation of a tractable objective.
  Lifting this assumption allows us to derive a tighter variational bound
  on the IB, which we show to produce better classification accuracy, with
  equivalent or superior robustness to adversarial attacks, over high dimensional
@@ -3838,7 +3755,7 @@ cite{Alemi2018}
 
  to provide a possible insight to the effects of our proposed derivation
  on the quality of the learned representation.
- We show that, apart from the regularizational affects as described by 
+ We show that, apart from the regularization described by 
 \begin_inset ERT
 status open
 
@@ -3876,12 +3793,12 @@ cite{Fischer2020,Cheng2020}
 
 \begin_layout Standard
 While providing a complete framework for optimal data modeling, the IB,
- and it’s variational approximations, rely on three assumptions: (1) It
- suffices to optimize the mutual information metric to optimize a model’s
- performance; (2) Forgetting more information about the input, while keeping
- relevant information about the output, induces better generalization; (3)
- Mutual information between the input, output and latent representation
- can be either computed or approximated to a desired level of accuracy.
+ and its variational approximations, rely on three assumptions: (1) It suffices
+ to optimize the mutual information metric to optimize a model’s performance;
+ (2) Forgetting more information about the input, while keeping relevant
+ information about the output, induces better generalization; (3) Mutual
+ information between the input, output and latent representation can be
+ either computed or approximated to a desired level of accuracy.
  Our improved empirical results, induced by a tighter bound, suggest better
  data modeling, and strengthen the cause for the IB, and its variational
  approximations, as a learning framework for classifier DNNs.
@@ -3957,6 +3874,19 @@ status open
 
 \backslash
 bibliography{draft.bib}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setcounter{section}{1}
 \end_layout
 
 \end_inset
@@ -4228,42 +4158,12 @@ unsupervised
  This representation can be used further to achieve a variety of goals,
  including reasoning, prediction, communication etc.
  In particular, unsupervised clustering partitions the data points into
- exhaustive and mutually exclusive clusters
-\end_layout
-
-\begin_layout Standard
-clustering solution is a partition of the input data into several exhaustive
- and mutually exclusive clusters.
- Each cluster can be represented by a centroid which is typically estimated
- as some weighted average of the cluster’s members
-\end_layout
-
-\begin_layout Standard
-\begin_inset space ~
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset space ~
-\end_inset
-
-(see, e.g., [51], Chapter 23).
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset space ~
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-TODO: Add soft labels example, add definition od supervised and unsupervised.
+ exhaustive and mutually exclusive clusters, where each cluster can typically
+ be represented by a centroid, typically a weighted average of the cluster's
+ members.
+ Soft clustering assigns cluster probabilities for each data point, and
+ fits an assignment by minimizing the expected loss for these probabilities,
+ usually a distance metric such as MSE.
 \end_layout
 
 \begin_layout Standard
@@ -4715,13 +4615,6 @@ information (MI)
 \end_layout
 
 \begin_layout Section*
-\begin_inset Newpage clearpage
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section*
 \start_of_appendix
 Appendix B - Related work elaboration
 \begin_inset CommandInset label
@@ -4781,7 +4674,7 @@ ref{sec:deterministic_ib}
 \begin_inset Formula $\mathcal{L}_{IB}=I(X;Z)-\beta I(Z;Y)$
 \end_inset
 
-, depends on the lagrange multiplier 
+, depends on the Lagrange multiplier 
 \begin_inset Formula $\beta$
 \end_inset
 
@@ -5611,7 +5504,7 @@ citet{Fischer2020}
 \begin_inset Formula $\gamma=\beta-1$
 \end_inset
 
- following the chain rule of mutual information and the IB markov chain.
+ following the chain rule of mutual information and the IB Markov chain.
  We develope this equivalence in detail:
 \end_layout
 
@@ -5628,13 +5521,6 @@ CEB= & I(X;Z|Y)-\gamma I(Z;Y)\\
 = & I(X;Z)-\beta I(Z;Y)
 \end{align*}
 
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Newpage clearpage
 \end_inset
 
 
@@ -6378,63 +6264,6 @@ cite{ShwartzZiv2017}
  This suggests that this information plane behavior is not limited to simplified
  scenarios, but is a possible characteristic of the learning process in
  more challenging tasks as well.
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Newpage newpage
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-TODO:
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-Address TODOs in text
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-MOVE EXPERIMENT DESCRIPTION TO APPENDIX
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-SHORTEN DISCUSSION
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-ADD EMPHASIS ON THE UNSUPERVISED NATURE OF RATE-DISTORTION AND IB IN DISCUSSION,
- INTRO AND ABSTRACT
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-PROOF: TODOS, SPELLING, ?s, it's, paragraphing
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-PROOF READ
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-FINISH APENDICES
 \end_layout
 
 \end_body
