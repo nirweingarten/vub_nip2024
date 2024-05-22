@@ -189,7 +189,7 @@ The Information Bottleneck (IB) provides a hypothetically optimal framework
 \begin_inset Formula $p^{*}(y)$
 \end_inset
 
- is assumed to be constant, where in practice it is optimzed over.
+ is assumed to be constant, where in practice it is optimized over.
  This work demonstrates that lifting this assumption not only results in
  a tighter bound on the IB and improved empirical performance, but also
  proposes a new motivation for conditional entropy regularization.
@@ -853,7 +853,7 @@ citet{Geiger2020}
  VIB, and concluded that no ordering can be established in the general case,
  noting that any empirical improvement VCEB exhibits over VIB is not due
  to a tighter variational bound on the IB, but rather of VCEB being more
- amenable to optimization, or simply a successful lost function in its own
+ amenable to optimization, or simply a successful loss function in its own
  regard.
  
 \begin_inset ERT
@@ -967,7 +967,7 @@ cite{Pereyra2017}
 \end_inset
 
  both regularize classifier DNNs by increasing the entropy of their output.
- This is acheived by either inserting a scaled conditional entropy term,
+ This is achieved by either inserting a scaled conditional entropy term,
  
 \begin_inset Formula $-\gamma\cdot H\left(p_{\theta}(y|x)\right)$
 \end_inset
@@ -1021,8 +1021,8 @@ cite{Kingma2014}
  marginal and decoder distributions.
  The closer the families are to the true distributions, the tighter the
  gap to the optimal IB limit.
- VAEs are suseptible to learn low quality representations, as the KL regularizat
-ion term in the ELBO loss might induce a very uninformative representation,
+ VAEs are susceptible to learn low quality representations, as the KL regulariza
+tion term in the ELBO loss might induce a very uninformative representation,
  provided there's a strong enough decoder to compensate, by overfitting
  the encoder embeddings.
  This work is further elaborated on in Appendix
@@ -1159,7 +1159,7 @@ citet{Geiger2020}
 .
  Following this logic, we argue that supervised IB optimization should be
  defined as: 
-\begin_inset Formula $Z,\tilde{Y}:\underset{p(z|x),p(\hat{y}|z)}{min}I(X;Z)$
+\begin_inset Formula $Z,\tilde{Y}:\underset{p(z|x),p(\tilde{y}|z)}{min}I(X;Z)$
 \end_inset
 
  subject to 
@@ -1228,7 +1228,7 @@ cite{Higgins2017}
 \begin_inset Formula $-H(Y|Z)$
 \end_inset
 
- is dervied as CE between true and learned supervisor distributions 
+ is derived as CE between true and learned supervisor distributions 
 \begin_inset Formula $p^{*}(y),p(\tilde{y})$
 \end_inset
 
@@ -1755,6 +1755,11 @@ Intuition
 \end_layout
 
 \begin_layout Standard
+Based on Equation
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset ERT
 status open
 
@@ -1762,18 +1767,53 @@ status open
 
 
 \backslash
-citet{Barber2003}
+ref{eq:i_z_y}
 \end_layout
 
 \end_inset
 
- define the following lower bound and identity: 
+ and our definition of 
+\begin_inset Formula $\tilde{Y}$
+\end_inset
+
+ in Section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{sec:ib_upper_bound}
+\end_layout
+
+\end_inset
+
+ we give the following formulation of the Barber-Agakov bound and identity
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+cite{Barber2003}
+\end_layout
+
+\end_inset
+
+:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-I(Z;Y)\ge\int\int p^{*}(y,z)log\left(c(y|z)\right)dydz+H_{p^{*}}(Y)\equiv\tilde{I}(Z;Y)
+I(Z;Y)\ge\int\int p^{*}(y,z)log\left(c(\tilde{y}|z)\right)dydz+H_{p^{*}}(Y)\equiv\tilde{I}(Z;Y)
 \]
 
 \end_inset
@@ -1782,25 +1822,7 @@ I(Z;Y)\ge\int\int p^{*}(y,z)log\left(c(y|z)\right)dydz+H_{p^{*}}(Y)\equiv\tilde{
 \end_layout
 
 \begin_layout Standard
-All variational IB derivations 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-cite{Alemi2017,Fischer2020,Cheng2020}
-\end_layout
-
-\end_inset
-
- omit the entropy term 
-\begin_inset Formula $H_{p^{*}}(Y)$
-\end_inset
-
-, and utilize the bound to optimize the negative IB distortion term.
- The following inequality holds for all distributions 
+The following inequality holds for all distributions of 
 \begin_inset Formula $Y$
 \end_inset
 
@@ -1810,7 +1832,7 @@ cite{Alemi2017,Fischer2020,Cheng2020}
 \begin_layout Standard
 \begin_inset Formula 
 \[
-I(Z;Y)\ge\tilde{I}(Z;Y)\ge\int\int p^{*}(y,z)log\left(c(y|z)\right)dydz+min\left\{ H_{p^{*}}(Y),H_{c}(Y|Z)\right\} 
+H_{p^{*}}(Y)\ge I(Z;Y)\ge\tilde{I}(Z;Y)\ge\int\int p^{*}(y,z)log\left(c(\tilde{y}|z)\right)dydz+min\left\{ H_{p^{*}}(Y),H_{c}(\tilde{Y}|Z)\right\} 
 \]
 
 \end_inset
@@ -1828,21 +1850,51 @@ We have that the true MI
 \end_inset
 
  from below, which is in term squeezed by the VUB distortion term.
- It is possible that in the extreme case, increasing the entropy term 
-\begin_inset Formula $H_{c}(Y|Z)$
+ All variational IB derivations 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+cite{Alemi2017,Fischer2020,Cheng2020}
+\end_layout
+
 \end_inset
 
- might skew the true mutual information 
+ omit the entropy term 
+\begin_inset Formula $H_{p^{*}}(Y)$
+\end_inset
+
+, and derive the term 
+\begin_inset Formula $\int\int p^{*}(y,z)log\left(c(\tilde{y}|z)\right)dydz$
+\end_inset
+
+ into cross entropy, which is minimized during optimization.
+ Assuming that cross entropy is indeed minimized, intuition suggests that
+ increasing the entropy term 
+\begin_inset Formula $H_{c}(\tilde{Y}|Z)$
+\end_inset
+
+ as close as possible to 
+\begin_inset Formula $H_{p^{*}}(Y)$
+\end_inset
+
+ will push the true MI 
 \begin_inset Formula $I(Z;Y)$
 \end_inset
 
- up.
- Since the real RV 
+ closer to its theoretical limit.
+ Since the optimization cannot change the entropy of the true RV 
 \begin_inset Formula $Y$
 \end_inset
 
- is constant, this increase can only be caused by learning a better representati
-on 
+, the suggested increase in 
+\begin_inset Formula $I(Z;Y)$
+\end_inset
+
+ can only be caused by learning a more informative representation 
 \begin_inset Formula $Z$
 \end_inset
 
@@ -1868,7 +1920,7 @@ ref{venn_diagram}
  The left hand diagram suggest a model with low variational entropy, and
  a low variational mutual information, and the right hand diagram suggest
  a model with increased variational entropy.
- The cross entropy term pushes 
+ Reduction in cross entropy pushes 
 \begin_inset Formula $I(Z;\hat{Y})$
 \end_inset
 
@@ -1903,7 +1955,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename ../media/venn_diagram_new.png
-	scale 30
+	scale 25
 
 \end_inset
 
@@ -3797,18 +3849,6 @@ name "sec:Discussion"
 \end_layout
 
 \begin_layout Standard
-Intuition - Propose a new information theooretic take on regularization
- as enabling more mutual information
-\end_layout
-
-\begin_layout Standard
-\begin_inset space ~
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 The IB is a private case of rate distortion, and was initially designed
  as an optimization problem over compressed representations.
  Adapting the IB objective for supervised tasks results in optimization
@@ -4210,7 +4250,7 @@ A learning machine capable of implementing a predefined set of functions,
 The problem of learning is that of choosing from the given set of functions,
  the one that best approximates the supervisor’s response.
  The choice is typically based on a training set of 
-\begin_inset Formula $n$
+\begin_inset Formula $N$
 \end_inset
 
  independent and identically distributed pairs of observations drawn according
@@ -4224,7 +4264,7 @@ The problem of learning is that of choosing from the given set of functions,
 
 \begin_layout Standard
 Given a set of unlabeled data points 
-\begin_inset Formula $\{x_{1},...,x_{n}\},x_{i}\in\mathbb{R}^{d}$
+\begin_inset Formula $\{x_{1},...,x_{N}\},x_{i}\in\mathbb{R}^{d}$
 \end_inset
 
 , 
@@ -4844,8 +4884,7 @@ ref{info_plane}
 \end_inset
 
  we learn a representation that has the maximal possible information over
- the downstream task, but that also holds the maximal information over the
- training data, hence overfitted.
+ the downstream task.
  The region above the information curve is unreachable by any possible represent
 ation.
  The different bifurcation of the information curve, illustrated in Figure
@@ -4944,7 +4983,6 @@ Fixing a Broken Elbo
 \end_layout
 
 \begin_layout Standard
-As mentioned in 
 \begin_inset ERT
 status open
 
@@ -4952,75 +4990,105 @@ status open
 
 
 \backslash
-ref{sec:it_regularization}
+citet{Kingma2014}
 \end_layout
 
 \end_inset
 
-, 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-citet{Alemi2018}
-\end_layout
-
+ introduced variational auto encoders (VAEs) as a latent model based generative
+ DNN architecture.
+ An unobserved RV 
+\begin_inset Formula $Z$
 \end_inset
 
- extends the information plane with an additional theoretical bound for
- rate distortion ratio, imposed by the usage of finite parametric families
- of variational approximations.
- 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-citet{Alemi2018}
-\end_layout
-
+ is assumed to generate evidence 
+\begin_inset Formula $X$
 \end_inset
 
- observed that the KL regularization term in the ELBO loss function isn't
- directly affected by the quality of the reconstructed image, and vice versa.
- Following this logic, given a powerful enough decoder, optimizing the ELBO
- loss can result in poor latent representation, compensated for by an overfitted
- decoder.
- Mutual information is used to measure representation quality: 
-\begin_inset Formula $I_{e}(X;Z)\equiv\int\int p_{e}(x,z)log\left(\frac{p_{e}(x,z)}{p^{*}(x)p_{e}(z)}\right)dxdz$
+, a variational DNN encoder 
+\begin_inset Formula $e(z|x)$
 \end_inset
 
-, for a stochastic encoder 
-\begin_inset Formula $e$
+ is used to approximate the intractable posterior 
+\begin_inset Formula $p^{*}(z|x)$
+\end_inset
+
+, a variational DNN decoder 
+\begin_inset Formula $d(\hat{x}|z)$
+\end_inset
+
+ is used to reconstruct 
+\begin_inset Formula $X$
+\end_inset
+
+ as 
+\begin_inset Formula $\hat{X}$
+\end_inset
+
+.
+ The log probability 
+\begin_inset Formula $log\left(p^{*}(x)\right)$
+\end_inset
+
+ is developed in to the tractable Evidence Lower Bound (ELBO) loss: 
+\begin_inset Formula $log\left(p^{*}(x)\right)\ge\mathcal{L}_{\text{ELBO}}(x)\equiv\mathbb{E}_{e(z|x)}\left[log\left(d(\hat{x}|z)\right)\right]-D_{KL}\left(e(z|x)\big|\big|r(z)\right)$
+\end_inset
+
+, consisting of a reconstruction error term (cross entropy), and a KL regulariza
+tion term between encoder and variational marginal 
+\begin_inset Formula $r(z)$
 \end_inset
 
 .
  
-\begin_inset Formula $I_{e}$
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+citet{Alemi2018}
+\end_layout
+
 \end_inset
 
- can be bounded from both sides as follows: 
-\begin_inset Formula $H_{p^{*}}(X)-I_{d}(X;\hat{X})\le I_{e}(X;Z)\le D_{KL}\left(q_{\phi}(z|x)\big|\big|p_{\theta}(z)\right)$
+ adapts the information plane 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+cite{Tishby1999}
+\end_layout
+
+\end_inset
+
+ to VAEs by defining an additional theoretical bound for the ratio between
+ rate and distortion, imposed by the limits of finite parametric families
+ of variational approximations.
+ The variational rate is defined as: 
+\begin_inset Formula $I_{e}(X;Z)\equiv\int\int p^{*}(x)e(z|x)log\left(\frac{p^{*}(x)e(z|x)}{p^{*}(x)e(z)}\right)dxdz$
+\end_inset
+
+, and can be bounded from both sides as follows: 
+\begin_inset Formula $H_{p^{*}}(X)-I_{d}(X;\hat{X})\le I_{e}(X;Z)\le D_{KL}\left(e(z|x)\big|\big|r(z)\right)$
 \end_inset
 
 , where 
 \begin_inset Formula $H_{p^{*}}(X)$
 \end_inset
 
- is the true data entropy, 
+ is the true data entropy, and 
 \begin_inset Formula $I_{d}$
 \end_inset
 
  is the variational decoder's distortion.
- It is observed, that the KL term does not depend on the variational decoder
- distribution, and can be minimized regardless of reconstruction quality.
- Equivalently, good reconstruction does not directly depend on good representati
-on.
  Figure
 \begin_inset space ~
 \end_inset
@@ -5081,10 +5149,7 @@ ref{info_plane}
 
 ; (3) Realizable: Attainable given a finite parametric and tractable variational
  family.
-\end_layout
-
-\begin_layout Standard
-The black diagonal line at the lower left of Figure
+ The black diagonal line at the lower left of Figure
 \begin_inset space ~
 \end_inset
 
@@ -5102,7 +5167,7 @@ ref{phase_diagram}
 \end_inset
 
  satisfies 
-\begin_inset Formula $H_{p^{*}}(X)-I_{d}(X;\hat{X})=D_{KL}\left(q_{\phi}(z|x)\big|\big|p_{\theta}(z)\right)$
+\begin_inset Formula $H_{p^{*}}(X)-I_{d}(X;\hat{X})=D_{KL}\left(e(z|x)\big|\big|r(z)\right)$
 \end_inset
 
 , resulting in tight variational bounds on the mutual information: 
@@ -5110,28 +5175,20 @@ ref{phase_diagram}
 \end_inset
 
 .
- 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-cite{Alemi2018}
 \end_layout
 
-\end_inset
-
- notes that a common degeneration of representations in VAEs is a decrease
- in rate and distortion over the training data, together with an increase
- in both over unseen data.
- This is caused by overpowerful decoders that overfit an uninformative learned
- representation.
+\begin_layout Standard
+It is observed, that the ELBO KL term does not depend on the variational
+ decoder distribution, and can be minimized regardless of reconstruction
+ quality.
+ Equivalently, good reconstruction does not directly depend on good representati
+on.
+ Empirical evidence suggest that the ELBO loss is prone to result in poor
+ latent representation learned, compensated for by an overfitted decoder.
  Low ELBO loss can be attained as both the distortion and rate terms are
  minimized during training.
  
-\begin_inset Formula $D_{KL}\left(q_{\phi}(z|x)\big|\big|p_{\theta}(z)\right)$
+\begin_inset Formula $D_{KL}\left(e(z|x)\big|\big|r(z)\right)$
 \end_inset
 
  approaches 
@@ -5347,7 +5404,7 @@ status open
 
 
 \backslash
-ref{subsec:Evaluation-and-analysis}
+ref{sec:text_classification-1}
 \end_layout
 
 \end_inset
